@@ -1,0 +1,100 @@
+const joi = require("joi");
+const Joi = require('joi').extend(require('@joi/date'));
+const mongoose = require("mongoose");
+
+
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: [true, "Please enter your email"],
+      trim: true,
+      minlength: 5,
+      maxlength: 100,
+      unique: true,
+    },
+    userName: {
+      type: String,
+      required: [true, "Please enter your name"],
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: [true, "Please enter your password"],
+      trim: true,
+      minlength: 6,
+    },
+    fatherName : {
+        type: String,
+        required: [true, "Please enter the Father Name"],
+        trim: true,
+        minlength: 3,
+    }
+    ,
+    motherName : {
+        type: String,
+        required: [true, "Please enter The mother Name "],
+        trim: true,
+        minlength: 3,
+    }
+    ,
+    bloodType: {
+        type: String,
+        required: [true, "Please enter The clild's blood type"],
+        trim: true
+    }
+    ,
+    phoneNumber :{
+        type: Number,
+        required: [true, "Please enter your Phone Number"],
+        trim: true,
+        minlength: 11,
+    }
+    ,
+    birthDate: {
+        type: String,
+        required: [true, "Please enter The clild's birthDate "],
+        trim: true,
+    }
+    ,
+    NationalID : {
+        type: String,
+        required: [true, "Please enter The clild's NationalID "],
+        trim: true,
+    
+    }
+  },
+  { timestamps: true }
+);
+
+const userModel = mongoose.model("user", userSchema);
+
+function validateRegisterUser(obj) {
+
+  const schema = joi.object({
+    email: joi.string().trim().min(5).max(100).required().email(),
+    userName: joi.string().trim().min(5).max(100).required(),
+    password: joi.string().trim().min(6).required(),
+    fatherName: joi.string().trim().min(3).max(100).required(),
+    motherName: joi.string().trim().min(3).max(100).required(),
+    phoneNumber:joi.string().trim().min(11).required(),
+    NationalID:joi.string().length(14).required(),
+    birthDate:joi.string().length(10).required(),
+    bloodType: joi.string().required()
+   
+  });
+  return schema.validate(obj);
+}
+
+function validateLoginUser(obj) {
+  const schema = joi.object({
+    userName: joi.string().trim().min(5).max(100).required(),
+    password: joi.string().trim().min(6).required(),
+  });
+  return schema.validate(obj);
+}
+module.exports = {
+  userModel,
+  validateRegisterUser,
+  validateLoginUser,
+};
