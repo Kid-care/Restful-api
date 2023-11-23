@@ -1,10 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const authRouter = require('./routes/authRoute');
 dotenv.config();
 
-
+// express app
 const app = express();
+app.use(express.json());
+app.use('/api/v1/auth', authRouter);
 
 // dp connection
 const database = require('./config/db');
