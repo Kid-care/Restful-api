@@ -93,6 +93,7 @@ function validateLoginUser(obj) {
   });
   return schema.validate(obj);
 }
+
 module.exports = {
   userModel,
   validateRegisterUser,
