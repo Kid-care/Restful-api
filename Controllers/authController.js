@@ -107,7 +107,7 @@ const mailOptions = {
   from: process.env.EMAIL,
   to: email,
   subject: "Reset Password",
-  text: `Hi ${userName} , Please click on the link to reset your password http://localhost:3000/reset-password/${userId}/${token}`,
+  text: `Hi ${userName} , Please click on the link to reset your password http://localhost:${process.env.PORT}/reset-password/${userId}/${token}`,
 };
  
 transporter.sendMail(mailOptions, function(error, info){
@@ -154,8 +154,6 @@ const forgotPasswordController = async(req,res)=>{
   }
 }
 
-
-
 // reset password controller
 const getresetPasswordController = async(req,res)=>{
   try{
@@ -185,7 +183,7 @@ const getresetPasswordController = async(req,res)=>{
       })
 
     }
-    catch{
+    catch(error){
       res.status(200).send({
         success: false,
         message: "Error in forgot password",
@@ -215,7 +213,7 @@ const postresetPasswordController = async(req,res)=>{
         success: true,
         message: "Password reset successfully",
       });
-   } catch{
+   } catch(error){
      res.status(200).send({
        success: false,
        message: "Error in forgot password",
