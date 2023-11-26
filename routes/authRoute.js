@@ -1,25 +1,30 @@
 const express = require('express')
 const router = express.Router();
 const asyncHandler = require("express-async-handler")
-const {registerController,loginController} = require('../Controllers/authController');
+const { loginController , 
+    registerController,
+    forgotPasswordController,
+    getresetPasswordController,
+    postresetPasswordController
+    } = require('../Controllers/authController');
 const { body } = require('express-validator');
-// const sendSMS = require('../sendSMS');
-const {sendSMS , forgotPasswordController , resetPasswordController} = require('../sendSMS');
 
 
 //register router
 router.post('/register' , registerController);
-
 // login router 
 router.post('/login',loginController)
 
-// forget password
+// forgot password router
+router.post('/forgotPassword',forgotPasswordController)
 
-router.post('/forgetPass',forgotPasswordController)
+// forgot password router
+router.post('/forgotpassword', forgotPasswordController);
 
-// reset password
+// reset password router
+router.get('/resetpassword/:userId/:token', getresetPasswordController);
 
-router.post('/resetPass',resetPasswordController)
-
+// reset password router
+router.post('/resetpassword/:userId/:token', postresetPasswordController);
 
 module.exports = router ;

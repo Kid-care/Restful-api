@@ -1,7 +1,9 @@
 const express = require("express");
 const router  = express.Router() ;
 require('dotenv').config();
-const JWT = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
 const user = require("../models/userModel");
@@ -42,16 +44,16 @@ const registerController = asyncHandler(async(req,res)=>{
 
 const loginController = async (req, res) => {
     try {
-      const { phoneNumber, password } = req.body;
+      const { email, password } = req.body;
       //validation
-      if (!phoneNumber || !password) {
+      if (!email || !password) {
         return res.status(404).send({
           success: false,
           message: "Invalid email or password",
         });
       }
       //check user
-      const user = await userModel.findOne({ phoneNumber });
+      const user = await userModel.findOne({ email : email });
       if (!user) {
         return res.status(404).send({
           success: false,
@@ -67,7 +69,7 @@ const loginController = async (req, res) => {
         });
       }
       //token
-      const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET,{
+      const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET,{
         expiresIn: "7d",
       });
       res.status(200).send({
@@ -90,7 +92,143 @@ const loginController = async (req, res) => {
     }
   };
 
-  module.exports={loginController, registerController};
+//send reset password mail
+const sendresetpasswordmail  = async (userName,email,token , userId )=>{
+  try{
+//pasword controller
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
+});
+const mailOptions = {
+  from: process.env.EMAIL,
+  to: email,
+  subject: "Reset Password",
+  text: `Hi ${userName} , Please click on the link to reset your password http://localhost:3000/reset-password/${userId}/${token}`,
+};
+ 
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Email sent: " + info.response);
+  }
+});
+  } catch{
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in sending mail",
+      error,
+    });
+  }
+ }
+ 
+//forgot password controller
+const forgotPasswordController = async(req,res)=>{
+  try{
+     const email = req.body.email;
+     const  userdate = await userModel.findOne({email:email})
+      if(!userdate){
+        res.status(200).send({
+          success: false,
+          message: "Email is not registerd",
+        });
+      }
+      const secret = process.env.JWT_SECRET + userdate.password;
+      const token = jwt.sign({email:email,id:userdate.id},secret,{expiresIn:"15m"});
+      await sendresetpasswordmail(userdate.userName,userdate.email,token,userdate.id);
+      res.status(200).send({
+        success: true,
+        message: "Email sent successfully",
+      });
+     
+  } catch(error){
+    res.status(200).send({
+      success: false,
+      message:error.message
+    });
+  }
+}
 
 
 
+// reset password controller
+const getresetPasswordController = async(req,res)=>{
+  try{
+     const  userdate =  await userModel.findById(req.params.userId)
+      if(!userdate){
+        res.status(200).send({
+          success: false,
+          message: "Email is not registerd",
+        });
+      }
+      const secret = process.env.JWT_SECRET + userdate.password;
+      jwt.verify(req.params.token,secret,(error,decoded)=>{
+        if(error){
+          res.status(200).send({
+            success: false,
+            message: "Error in forgot password",
+            message:error.message,
+          });
+          console.log(error);
+        }
+        if(decoded){
+          res.status(200).send({
+            success: true,
+            message: "Password reset successfully",
+          });
+        }
+      })
+
+    }
+    catch{
+      res.status(200).send({
+        success: false,
+        message: "Error in forgot password",
+        message:error.message,
+      });
+      console.log(error);
+    }
+}
+
+const postresetPasswordController = async(req,res)=>{
+  // to do validation
+  const  userdate =  await userModel.findById(req.params.userId)
+   if(!userdate){
+     res.status(200).send({
+       success: false,
+       message: "Email is not registerd",
+     });
+   }
+   const secret = process.env.JWT_SECRET + userdate.password;
+   try{
+     jwt.verify(req.params.token,secret);
+     const salt = await bcrypt.genSalt(10);
+     req.body.password = await bcrypt.hash(req.body.password,salt);
+     userdate.password = req.body.password;
+      await userdate.save();
+      res.status(200).send({
+        success: true,
+        message: "Password reset successfully",
+      });
+   } catch{
+     res.status(200).send({
+       success: false,
+       message: "Error in forgot password",
+       message:error.message,
+     });
+     console.log(error);
+   } 
+}
+
+module.exports = {
+    registerController,
+    loginController,
+    forgotPasswordController,
+    getresetPasswordController,
+    postresetPasswordController
+}

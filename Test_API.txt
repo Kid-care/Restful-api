@@ -21,6 +21,14 @@ login
     "phoneNumber":"01016776619"
 }
 
+// reset 
+{
+    "userEmail": "kidcare2002@gmail.com",
+    "code" : "442363",
+    "newPassword" : "KIDCARE888"
+
+}
+
 
 
 
