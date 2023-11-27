@@ -1,7 +1,7 @@
-const joi = require("joi");
-const Joi = require('joi').extend(require('@joi/date'));
 const mongoose = require("mongoose");
-
+const joi = require("joi");
+//const passwordComplexity = require("joi-password-complexity");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please enter your email"],
       trim: true,
       minlength: 5,
-      maxlength: 100,
       unique: true,
     },
     userName: {
@@ -67,7 +66,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const userModel = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
+
+//Generate Token
+userSchema.methods.generateToken = function(){
+  return jwt.sign({id: this._id ,isAdmin: this.isAdmin} , process.env.JWT_SECRET_KEY);
+}
 
 function validateRegisterUser(obj) {
 
@@ -88,13 +92,32 @@ function validateRegisterUser(obj) {
 
 function validateLoginUser(obj) {
   const schema = joi.object({
-    userName: joi.string().trim().min(5).max(100).required(),
-    password: joi.string().trim().min(6).required(),
+    email: joi.string().trim().min(5).max(100).required().email(),
+    password: joi.string().trim().min(6).required()
   });
   return schema.validate(obj);
 }
+// Validate Change Password
+function validateChangePassword(obj) {
+  const schema = joi.object({
+    password: joi.string().trim().min(6).required()
+  });
+  return schema.validate(obj);
+}
+// Validate Update User
+function validateUpdateUser(obj) {
+  const Schema = joi.object({
+      email: joi.string().trim().min(5).max(100).email(),
+      username: joi.string().trim().min(2).max(200),
+      password: joi.string().trim().min(6)
+  
+  })
+  return Schema.validate(obj);
+}
 module.exports = {
-  userModel,
+  User,
   validateRegisterUser,
   validateLoginUser,
+  validateUpdateUser,
+  validateChangePassword
 };

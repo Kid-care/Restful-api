@@ -7,12 +7,11 @@ const nodemailer = require("nodemailer");
 
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
-const user = require("../models/userModel");
-const {userModel
+const {User
     ,validateRegisterUser
     } = require('../models/userModel');
     const asyncHandler = require("express-async-handler");
-const e = require("express");
+
 
 //register controller
 const registerController = asyncHandler(async(req,res)=>{
@@ -20,12 +19,12 @@ const registerController = asyncHandler(async(req,res)=>{
     if(error){
         return res.status(400).json({message: error.details[0].message});
     }
-    let user = await userModel.findOne({email : req.body.email});
+    let user = await User.findOne({email : req.body.email});
     if(user){
         return res.status(400).json({message : "this user already registered"})
     }
 
-    user = new userModel({
+    user = new User({
         email : req.body.email ,
         userName : req.body.userName ,
         password : req.body.password,
@@ -41,20 +40,21 @@ const registerController = asyncHandler(async(req,res)=>{
    res.status(201).json(result);
 });
 
+
 // login
 
 const loginController = async (req, res) => {
     try {
-      const { phoneNumber, password } = req.body;
+      const { email, password } = req.body;
       //validation
-      if (!phoneNumber || !password) {
+      if (!email || !password) {
         return res.status(404).send({
           success: false,
           message: "Invalid email or password",
         });
       }
       //check user
-      const user = await userModel.findOne({ phoneNumber });
+      const user = await User.findOne({ email });
       if (!user) {
         return res.status(404).send({
           success: false,
@@ -62,7 +62,10 @@ const loginController = async (req, res) => {
         });
       }
        
-      const match = await comparePassword(password, user.password);
+      const match = bcrypt.compare(
+        req.body.password,
+        user.password
+      );
       if (!match) {
         return res.status(200).send({
           success: false,
@@ -93,6 +96,10 @@ const loginController = async (req, res) => {
     }
   };
 
+<<<<<<< HEAD
+  module.exports={loginController, registerController};
+  
+=======
   // send reset password mail
   const sendresetpasswordmail  = async ( userName,email , userId , code )=>{
     try{
@@ -162,3 +169,4 @@ const loginController = async (req, res) => {
 
 
 
+>>>>>>> main
