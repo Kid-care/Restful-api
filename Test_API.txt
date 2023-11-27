@@ -13,6 +13,16 @@
     "birthDate":"2002-05-10",
     "bloodType":"O+"
 }
+{"email":"khoulodosama265@gmail.com",
+    "userName" :"خلود اسامه",
+    "password":"Khoulod12",
+    "fatherName":"اسامه",
+    "motherName":"رابحة",
+    "phoneNumber":"01026264016",
+    "NationalID": "30205784576789",
+    "birthDate":"2002-04-12",
+    "bloodType":"O+"
+}
 =================================
 login 
 --------------------------------
@@ -21,15 +31,10 @@ login
     "phoneNumber":"01016776619"
 }
 
-// reset 
 {
-    "userEmail": "kidcare2002@gmail.com",
-    "code" : "442363",
-    "newPassword" : "KIDCARE888"
-
+    "password":"Khoulod12",
+    "phoneNumber":"01026264016"
 }
-
-
 
 
 ***********************************************************************
