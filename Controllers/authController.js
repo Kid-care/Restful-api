@@ -96,10 +96,8 @@ const loginController = async (req, res) => {
     }
   };
 
-<<<<<<< HEAD
   module.exports={loginController, registerController};
-  
-=======
+
   // send reset password mail
   const sendresetpasswordmail  = async ( userName,email , userId , code )=>{
     try{
@@ -167,6 +165,3 @@ const loginController = async (req, res) => {
 
   module.exports={loginController, registerController,sendresetpasswordmail ,forgotPasswordController };
 
-
-
->>>>>>> main
