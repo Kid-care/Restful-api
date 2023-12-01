@@ -62,10 +62,13 @@ const loginController = async (req, res) => {
         });
       }
        
-      const match = bcrypt.compare(
-        req.body.password,
-        user.password
-      );
+    const match = await comparePassword(password, user.password);
+    if (!match) {
+      return res.status(200).send({
+        success: false,
+        message: "Invalid Password",
+      });
+    }
       if (!match) {
         return res.status(200).send({
           success: false,

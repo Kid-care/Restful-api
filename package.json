@@ -6,13 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "./node_modules/.bin/nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@joi/date": "^2.1.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
