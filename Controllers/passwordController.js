@@ -46,7 +46,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
      to: user.email,
      subject: "Reset Password",
      html: `<div>
-               <h4> Hi ${user.name}, Click on the link below to reset your password </h4>
+               <h4> Hi ${user.userName}, Click on the link below to reset your password </h4>
                <p>${link}</p>
            </div>`
    }
