@@ -31,7 +31,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
     expiresIn: "10m",
   });
 
-  const link = `http://localhost:5000/password/reset-password/${user._id}/${token}`;
+  const link = `https://kid-care.onrender.com/password/reset-password/${user._id}/${token}`;
  // res.json({message:'Click on the link', resetPasswordLink: link});
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -45,10 +45,11 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
      from: process.env.USER_EMAIL,
      to: user.email,
      subject: "Reset Password",
-     html: `<div>
-               <h4>Click on the link below to reset your password</h4>
-               <p>${link}</p>
-           </div>`
+    //  html: `<div>
+    //            <h4>Click on the link below to reset your password</h4>
+    //            <p>${link}</p>
+    //        </div>`
+    message: `Hi ${user.name}, click on the link to reset your password ${link}`
    }
 
    transporter.sendMail(mailOptions, function(error, success){
