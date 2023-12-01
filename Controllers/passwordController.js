@@ -45,11 +45,10 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
      from: process.env.USER_EMAIL,
      to: user.email,
      subject: "Reset Password",
-    //  html: `<div>
-    //            <h4>Click on the link below to reset your password</h4>
-    //            <p>${link}</p>
-    //        </div>`
-    message: `Hi ${user.name}, click on the link to reset your password ${link}`
+     html: `<div>
+               <h4> Hi ${user.name}, Click on the link below to reset your password </h4>
+               <p>${link}</p>
+           </div>`
    }
 
    transporter.sendMail(mailOptions, function(error, success){
