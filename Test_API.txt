@@ -3,41 +3,32 @@
  "register"
 -------------------------------------------------
 {
-    "email":"esraa55858@gmail.com",
-    "userName" :"اسراءصيام ",
+    "email":"esraasyam15@gmail.com",
+    "userName" :"جني محمد",
     "password":"esraa55",
-    "fatherName":"صيام",
-    "motherName":"شريين",
+    "fatherName":"محمد",
+    "motherName":"ايه",
     "phoneNumber":"01016776619",
     "NationalID": "30205784578988",
     "birthDate":"2002-05-10",
     "bloodType":"O+"
 }
-{"email":"khoulodosama265@gmail.com",
-    "userName" :"خلود اسامه",
-    "password":"Khoulod12",
-    "fatherName":"اسامه",
-    "motherName":"رابحة",
-    "phoneNumber":"01026264016",
-    "NationalID": "30205784576789",
-    "birthDate":"2002-04-12",
-    "bloodType":"O+"
-}
+
+url : https://kid-care.onrender.com/api/v1/auth/register
 =================================
 login 
 --------------------------------
 {
-    "password":"esraa55",
-    "phoneNumber":"01016776619"
+    "email" : "esraasyam15@gmail.com",
+    "password":"584199"
 }
+ulr : https://kid-care.onrender.com/api/v1/auth/login
 
+===============================
+forget password
+--------------------------------
 {
-    "password":"Khoulod12",
-    "phoneNumber":"01026264016"
+    "email" : "esraasyam15@gmail.com"
 }
 
-
-***********************************************************************
-                                                         " api "
-<register > : http://localhost:5000/api/v1/auth/register 
-<login >   : http://localhost:5000/api/v1/auth/login  
+url : https://kid-care.onrender.com/password/forgot-password
