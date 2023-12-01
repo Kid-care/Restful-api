@@ -3,6 +3,7 @@ const { User, validateChangePassword } = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
+const { comparePassword, hashPassword } = require("../helpers/authHelper");
 
 /**
  *  @desc    Get Forgot Password View
@@ -10,9 +11,11 @@ const nodemailer = require("nodemailer");
  *  @method  GET
  *  @access  public
  */
+
 module.exports.getForgotPasswordView = asyncHandler((req, res) => {
   res.render("forgot-password");
 });
+
 
 /**
  *  @desc    Send Forgot Password Link
@@ -20,6 +23,7 @@ module.exports.getForgotPasswordView = asyncHandler((req, res) => {
  *  @method  POST
  *  @access  public
  */
+
 module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
@@ -31,7 +35,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
     expiresIn: "10m",
   });
 
-  const link = `https://kid-care.onrender.com/password/reset-password/${user._id}/${token}`;
+  const link = `http://localhost:5000/password/reset-password/${user._id}/${token}`;
  // res.json({message:'Click on the link', resetPasswordLink: link});
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -63,12 +67,14 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
    res.render("link-send");
  });
 
+
 /**
  *  @desc    Get Reset Password View
  *  @route   /password/reset-password/:userId/:token
  *  @method  GET
  *  @access  public
  */
+
 module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.userId);
   if (!user) {
@@ -77,8 +83,8 @@ module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
 
   const secret = process.env.JWT_SECRET + user.password;
   try {
-    jwt.verify(req.params.token, secret);
-    res.render("reset-password", { email: user.email });
+    jwt.verify(req.params.token, secret); // if token is expired it will throw an error
+    res.render("reset-password", { email: user.email });  
   } catch (error) {
     console.log(error);
     res.json({ message: "Error" });
@@ -91,6 +97,7 @@ module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
  *  @method  POST
  *  @access  public
  */
+
 module.exports.resetThePassword = asyncHandler(async (req, res) => {
   const { error } = validateChangePassword(req.body);
    if(error) {
@@ -104,16 +111,16 @@ module.exports.resetThePassword = asyncHandler(async (req, res) => {
 
   const secret = process.env.JWT_SECRET + user.password;
   try {
-    jwt.verify(req.params.token, secret);
+    jwt.verify(req.params.token, secret); // if token is expired it will throw an error
 
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10); // generate salt
     req.body.password = await bcrypt.hash(req.body.password, salt);
     user.password = req.body.password;
-
     await user.save();
     res.render("success-password");
   } catch (error) {
     console.log(error);
     res.json({ message: "Error" });
   }
+  
 })

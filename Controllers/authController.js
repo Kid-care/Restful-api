@@ -61,8 +61,8 @@ const loginController = async (req, res) => {
           message: "User is not registerd",
         });
       }
-       
-    const match = await comparePassword(password, user.password);
+     
+    const  match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(200).send({
         success: false,

@@ -1,4 +1,3 @@
-
 const bcrypt = require("bcrypt");
  const hashPassword = async (password) => {
   try {
@@ -9,7 +8,7 @@ const bcrypt = require("bcrypt");
     console.log(error);
   }
 };
-
+ 
  const comparePassword = async (password, hashedPassword) =>{
    return await password === hashedPassword;  
 };
