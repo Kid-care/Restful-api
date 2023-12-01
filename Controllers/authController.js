@@ -17,11 +17,17 @@ const {User
 const registerController = asyncHandler(async(req,res)=>{
     const { error }  = validateRegisterUser(req.body); 
     if(error){
-        return res.status(400).json({message: error.details[0].message});
+        return res.status(400).json({
+          status : "false",
+          message: error.details[0].message
+        });
     }
     let user = await User.findOne({email : req.body.email});
     if(user){
-        return res.status(400).json({message : "this user already registered"})
+        return res.status(400).json({
+          status : "false",
+          message : "this user already registered"
+        })
     }
 
     user = new User({
@@ -37,7 +43,21 @@ const registerController = asyncHandler(async(req,res)=>{
     });
 
    const result  =  await user.save();
-   res.status(201).json(result);
+   res.status(201).json({
+        status : "true",
+        message : "user created successfully",
+        user : {
+            _id : result._id,
+            email : result.email,
+            userName : result.userName,
+            fatherName : result.fatherName,
+            motherName : result.motherName,
+            bloodType : result.bloodType,
+            phoneNumber: result.phoneNumber,
+            birthDate : result.birthDate,
+            NationalID: result.NationalID 
+        }
+    });
 });
 
 
@@ -49,7 +69,7 @@ const loginController = async (req, res) => {
       //validation
       if (!email || !password) {
         return res.status(404).send({
-          success: false,
+          status : "false",
           message: "Invalid email or password",
         });
       }
@@ -57,7 +77,7 @@ const loginController = async (req, res) => {
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(404).send({
-          success: false,
+          status: false,
           message: "User is not registerd",
         });
       }
@@ -65,13 +85,13 @@ const loginController = async (req, res) => {
     const  match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(200).send({
-        success: false,
+        status: false,
         message: "Invalid Password",
       });
     }
       if (!match) {
         return res.status(200).send({
-          success: false,
+          status: false,
           message: "Invalid Password",
         });
       }
@@ -80,7 +100,7 @@ const loginController = async (req, res) => {
         expiresIn: "7d",
       });
       res.status(200).send({
-        success: true,
+        status: true,
         message: "login successfully",
         user: {
           _id: user._id,
@@ -92,7 +112,7 @@ const loginController = async (req, res) => {
     } catch (error) {
       console.log(error);
       res.status(500).send({
-        success: false,
+        status: false,
         message: "Error in login",
         error,
       });
