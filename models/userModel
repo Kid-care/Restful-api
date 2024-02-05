@@ -83,7 +83,7 @@ function validateRegisterUser(obj) {
     motherName: joi.string().trim().min(3).max(100).required(),
     phoneNumber:joi.string().trim().min(11).required(),
     NationalID:joi.string().length(14).required(),
-    birthDate:joi.string().length(10).required(),
+    birthDate:joi.string().max(10).min(8).required(),
     bloodType: joi.string().required()
    
   });
