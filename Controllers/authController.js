@@ -26,7 +26,7 @@ const registerController = asyncHandler(async (req, res) => {
   if (user) {
     return res.status(400).json({
       status: "false",
-      message: "this user already registered"
+      message: "هذا المستخدم مسجل بالفعل"
     })
   }
 
@@ -48,7 +48,7 @@ const registerController = asyncHandler(async (req, res) => {
   const result = await user.save();
   res.status(201).json({
     status: "true",
-    message: "user created successfully",
+    message: "تم إنشاء المستخدم بنجاح",
     user: {
       _id: result._id,
       email: result.email,
@@ -72,17 +72,17 @@ const loginController = async (req, res) => {
     const { email, password } = req.body;
     //validation
     if (!email || !password) {
-      return res.status(404).send({
+      return res.status(200).send({
         status: "false",
-        message: "Invalid email or password",
+        message: "البريد الإلكتروني أو كلمة المرور غير صالحة",
       });
     }
     //check user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).send({
+      return res.status(200).send({
         status: false,
-        message: "User is not registerd",
+        message: "المستخدم غير مسجل",
       });
     }
 
@@ -90,7 +90,7 @@ const loginController = async (req, res) => {
     if (!match) {
       return res.status(200).send({
         status: false,
-        message: "Invalid Password",
+        message: "كلمة المرور غير صالحة",
       });
     }
     //token
@@ -99,7 +99,7 @@ const loginController = async (req, res) => {
     });
     res.status(200).send({
       status: true,
-      message: "login successfully",
+      message: "تم تسجيل الدخول بنجاح",
       user: {
         _id: user._id,
         name: user.name,
@@ -109,9 +109,9 @@ const loginController = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({
+    res.status(200).send({
       status: false,
-      message: "Error in login",
+      message: "خطأ في عملية تسجيل الدخول",
       error,
     });
   }

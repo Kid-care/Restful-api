@@ -27,7 +27,7 @@ module.exports.getForgotPasswordView = asyncHandler((req, res) => {
 module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(404).json({ message: "user not found" });
+    return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
   const secret = process.env.JWT_SECRET + user.password;
@@ -58,7 +58,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
    transporter.sendMail(mailOptions, function(error, success){
      if(error){
        console.log(error);
-       res.status(500).json({message: "something went wrong"});
+       res.status(500).json({message: "حدث خطأ ما"});
      } else {
        console.log("Email sent: " + success.response);
        
@@ -78,7 +78,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
 module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.userId);
   if (!user) {
-    return res.status(404).json({ message: "user not found" });
+    return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
   const secret = process.env.JWT_SECRET + user.password;
@@ -106,7 +106,7 @@ module.exports.resetThePassword = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.params.userId);
   if (!user) {
-    return res.status(404).json({ message: "user not found" });
+    return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
   const secret = process.env.JWT_SECRET + user.password;
