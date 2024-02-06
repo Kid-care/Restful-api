@@ -76,15 +76,6 @@ userSchema.methods.generateToken = function(){
 function validateRegisterUser(obj) {
 
   const schema = joi.object({
-    // email: joi.string().trim().min(5).max(100).required().email(),
-    // userName: joi.string().trim().min(5).max(100).required(),
-    // password: joi.string().trim().min(6).required(),
-    // fatherName: joi.string().trim().min(3).max(100).required(),
-    // motherName: joi.string().trim().min(3).max(100).required(),
-    // phoneNumber:joi.string().trim().min(11).required(),
-    // NationalID:joi.string().length(14).required(),
-    // birthDate:joi.string().max(10).min(8).required(),
-    // bloodType: joi.string().required()
     email: joi.string().trim().min(5).max(100).required().email().messages({
       'string.base': 'يجب أن يكون البريد الإلكتروني نصًا',
       'string.empty': 'يجب ألا يكون البريد الإلكتروني فارغًا',
