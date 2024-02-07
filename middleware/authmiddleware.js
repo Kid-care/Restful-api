@@ -6,8 +6,7 @@ const jwt = require('jsonwebtoken');
 const adminAccess =async (req, res, next) => {
     try{
         const user =  await UserModel.findById(req.user._id);
-        if(parseInt(user.role)!== parseInt(1) ){
-            console.log(user.role);
+        if(parseInt(user.role)!== "admin" ){
             return res.status(401).send({message: "Admin Access Denied"});
         }
         else {
