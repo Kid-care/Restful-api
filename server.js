@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRouter = require('./routes/authRoute');
+const categoryRoutes =  require("./routes/categoryRouters")
 const password = require('./routes/password');
 const { notFound, errorHandler } = require("./middleware/errors");
 const logger = require("./middleware/logger");
@@ -28,6 +29,7 @@ app.set('view engine', "ejs");
 app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use("/password",password);
+app.use("/api/v1/categories", categoryRoutes);
 
 // Error Handler Middleware
 app.use(notFound);
