@@ -140,7 +140,8 @@ function validateRegisterUser(obj) {
   })
   ,
   bloodType: joi.string().required().messages({
-      'any.required': 'يجب إدخال فصيلة الدم'
+      'any.required': 'يجب إدخال فصيلة الدم',
+      'string.empty': 'يجب إدخال فصيلة الدم'
   })
    
   });
