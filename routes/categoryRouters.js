@@ -3,7 +3,7 @@ const { createCategory,
     deleteCategory,
     categoryControlller,
     singleCategoryController
-  } = require('../controllers/categoryController');
+  } = require('../Controllers/categoryController.js')
   const {adminAccess } = require('../middleware/authmiddleware')
 
 const express = require('express');

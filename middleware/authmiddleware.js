@@ -1,4 +1,3 @@
-
 const { parse } = require('dotenv');
 const UserModel = require('../models/userModel');
 const jwt = require('jsonwebtoken');
