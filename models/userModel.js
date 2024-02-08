@@ -131,8 +131,7 @@ function validateRegisterUser(obj) {
       'any.required': 'يجب إدخال تاريخ الميلاد'
   }),
   bloodType: joi.string().required().messages({
-      'any.required': 'يجب إدخال فصيلة الدم',
-      'string.empty': 'يجب إدخال فصيلة الدم'
+      'any.required': 'يجب إدخال فصيلة الدم'
   })
    
   });
@@ -146,6 +145,7 @@ function validateLoginUser(obj) {
   });
   return schema.validate(obj);
 }
+
 // Validate Change Password
 function validateChangePassword(obj) {
   const schema = joi.object({
@@ -153,6 +153,7 @@ function validateChangePassword(obj) {
   });
   return schema.validate(obj);
 }
+
 // Validate Update User
 function validateUpdateUser(obj) {
   const Schema = joi.object({
@@ -163,6 +164,7 @@ function validateUpdateUser(obj) {
   })
   return Schema.validate(obj);
 }
+
 module.exports = {
   User,
   validateRegisterUser,
