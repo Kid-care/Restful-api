@@ -5,24 +5,24 @@ const slugify = require("slugify");
  const createCategory = async (req, res) =>{
     try {
         const { name } = req.body;
-        if (!name) return res.status(400).json({ message: " الاسم مطلوب " });
+        if (!name) return res.status(400).json({ message: "Name is required" });
         const existingCategory = await categoryModel.findOne({ name });
     if (existingCategory) {
       return res.status(200).send({
         success: false,
-        message: "الفئة موجودة بالفعل",
+        message: "Category Already Exisits",
       });
     }
         
         const category = new categoryModel({ name, slug: slugify(name)}).save();
         res.status(200).json({
-            message: "تم إنشاء الفئة بنجاح",
+            message: "Category created successfully",
         });
     }
     catch (error) {
         console.log(error);
         res.status(400).json({
-            message: "خطأ أثناء إنشاء الفئة"
+            message: "Something went wrong in category creation"
         })
     }
 
@@ -32,7 +32,7 @@ const updateCategory = async (req, res) => {
     try{
         const { name } = req.body;
         const {id} = req.params;
-        if (!name) return res.status(400).json({ message: "الاسم مطلوب" });
+        if (!name) return res.status(400).json({ message: "Name is required" });
         const category = await categoryModel.findByIdAndUpdate(
             id,
             { name, slug: slugify(name) },
@@ -40,14 +40,14 @@ const updateCategory = async (req, res) => {
           );
           res.status(200).send({
             success: true,
-            messsage: "تم تحديث الفئة بنجاح",
+            messsage: "Category Updated Successfully",
             category,
           });
     }
     catch (error) {
         console.log(error);
         res.status(400).json({
-            message: "خطأ أثناء تحديث الفئة"
+            message: "Something went wrong in category updation"
         })
     }
 };
@@ -58,13 +58,13 @@ const updateCategory = async (req, res) => {
           await categoryModel.findByIdAndDelete(id);
           res.status(200).send({
             success: true,
-            message: "تم حذف الفئة بنجاح",
+            message: "Categry Deleted Successfully",
           });
         } catch (error) {
           console.log(error);
           res.status(500).send({
             success: false,
-            message: "خطأ أثناء حذف الفئة",
+            message: "error while deleting category",
             error,
           });
         }
@@ -75,7 +75,7 @@ const updateCategory = async (req, res) => {
           const category = await categoryModel.find({});
           res.status(200).send({
             success: true,
-            message: "قائمة كافة الفئات",
+            message: "All Categories List",
             category,
           });
         } catch (error) {
@@ -83,7 +83,7 @@ const updateCategory = async (req, res) => {
           res.status(500).send({
             success: false,
             error,
-            message: " خطأ أثناء الحصول  على جميع الفئات",
+            message: "Error while getting all categories",
           });
         }
       };
@@ -93,7 +93,7 @@ const updateCategory = async (req, res) => {
       const category = await categoryModel.findOne({ slug: req.params.slug });
       res.status(200).send({
         success: true,
-        message: "الحصول على فئة واحدة بنجاح",
+        message: "Get SIngle Category SUccessfully",
         category,
       });
     } catch (error) {
@@ -101,7 +101,7 @@ const updateCategory = async (req, res) => {
       res.status(500).send({
         success: false,
         error,
-        message: "خطأ أثناء الحصول على فئة واحدة",
+        message: "Error While getting Single Category",
       });
     }
   };
