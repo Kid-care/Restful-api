@@ -35,4 +35,33 @@ url : https://kid-care.onrender.com/password/forgot-password
 
 
 
+const {google} = require('googleapis');
+
+// Authenticate using service account credentials
+const auth = new google.auth.GoogleAuth({
+  keyFile: 'path/to/service-account-key.json',
+  scopes: ['https://www.googleapis.com/auth/cloud-platform']
+});
+
+// Create a Healthcare API client
+const healthcare = google.healthcare({
+  version: 'v1',
+  auth: auth
+});
+
+// Example: Retrieve a list of datasets
+async function listDatasets() {
+  try {
+    const res = await healthcare.projects.locations.datasets.list({
+      parent: 'projects/my-project/locations/us-central1',
+    });
+    console.log('Datasets:', res.data);
+  } catch (err) {
+    console.error('Error listing datasets:', err);
+  }
+}
+
+// Call the function
+listDatasets();
+
 
