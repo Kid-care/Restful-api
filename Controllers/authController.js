@@ -42,8 +42,7 @@ const registerController = asyncHandler(async (req, res) => {
     bloodType: req.body.bloodType,
     phoneNumber: req.body.phoneNumber,
     birthDate: req.body.birthDate,
-    NationalID: req.body.NationalID,
-    role :  req.body.role ? req.body.role : "user" 
+    NationalID: req.body.NationalID
   });
 
   const result = await user.save();
@@ -60,8 +59,7 @@ const registerController = asyncHandler(async (req, res) => {
       bloodType: result.bloodType,
       phoneNumber: result.phoneNumber,
       birthDate: result.birthDate,
-      NationalID: result.NationalID,
-      role : result.role
+      NationalID: result.NationalID
     }
   });
 });

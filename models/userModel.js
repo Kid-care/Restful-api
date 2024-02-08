@@ -61,12 +61,7 @@ const userSchema = new mongoose.Schema(
         required: [true, "الرجاء إدخال الرقم الوطني للطفل"],
         trim: true,
     
-    },
-    role: {
-      type: String,
-      eum: ["user", "admin"],
-      default: "user",
-    },
+    }
   },
   { timestamps: true }
 );
@@ -135,10 +130,6 @@ function validateRegisterUser(obj) {
       'string.max': 'يجب ألا يتجاوز تاريخ الميلاد 10 أحرفًا',
       'any.required': 'يجب إدخال تاريخ الميلاد'
   }),
-  role : joi.string().messages({
-      'any.required': 'يجب إدخال دور المستخدم'
-  })
-  ,
   bloodType: joi.string().required().messages({
       'any.required': 'يجب إدخال فصيلة الدم',
       'string.empty': 'يجب إدخال فصيلة الدم'

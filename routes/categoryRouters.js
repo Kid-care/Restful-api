@@ -9,10 +9,9 @@ const { createCategory,
 const express = require('express');
 const router = express.Router();
 
-router.post('/create', createCategory);
-//router.post('/create', adminAccess, createCategory); => to make this route only accessible to admin
-router.put('/update/:id', updateCategory);
-router.delete('/delete/:id', deleteCategory);
+router.post('/create', adminAccess, createCategory);
+router.put('/update/:id', adminAccess, updateCategory);
+router.delete('/delete/:id', adminAccess, deleteCategory);
 router.get('/all', categoryControlller);
 router.get('/:slug', singleCategoryController);
 
