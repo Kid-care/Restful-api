@@ -117,4 +117,69 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { loginController, registerController };
+
+
+//update prfole
+const updateProfileController = async (req, res) => {
+  try {
+    const { 
+      email,
+      userName,
+      password,
+      fatherName,
+      motherName,
+      bloodType,
+      phoneNumber,
+      birthDate,
+      NationalID
+
+    } = req.body;
+    // console.log(req.body.email);
+    let user = await User.findById(req.user._id);
+    consolelog(user._id);
+    // console.log(user.email);
+    //password
+    if (password && password.length < 6) {
+      return res.json({ error: "يجب أن تحتوي كلمة المرور على الأقل 6 أحرف" });
+    }
+    const hashedPassword = password ? await hashPassword(password) : undefined;
+    const updatedUser = await user.findByIdAndUpdate(
+     req.user._id,
+      {
+        email: email || user.email,
+        userName: userName || user.userName,
+        password: hashedPassword || user.password,
+        fatherName: fatherName || user.fatherName,
+        motherName: motherName || user.motherName,
+        bloodType: bloodType || user.bloodType,
+        phoneNumber: phoneNumber || user.phoneNumber,
+        birthDate: birthDate || user.birthDate,
+        NationalID: NationalID || user.NationalID
+      },
+      { new: true }
+    );
+    console.log(req.user);
+    res.status(200).send({
+      success: true,
+      message: "تم تسجيل الدخول بنجاح",
+      updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "خطأ أثناء تحديث الملف الشخصي",
+      error,
+    });
+
+  }
+  console.log(req.body);
+  console.log("update profile");
+  console.log(req.user);
+};
+
+module.exports = { loginController, registerController , updateProfileController};
+
+
+
+

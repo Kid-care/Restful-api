@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router();
 const asyncHandler = require("express-async-handler")
-const {registerController,loginController
+const {registerController,loginController , updateProfileController} = require('../Controllers/authController');
 
-} = require('../Controllers/authController');
 const { body } = require('express-validator');
 
 
@@ -12,5 +11,7 @@ router.post('/register' , registerController);
 // login router 
 router.post('/login',loginController)
 
+//update profile
+router.put("/editProfile", updateProfileController);
 
 module.exports = router ;
