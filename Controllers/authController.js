@@ -122,63 +122,91 @@ const loginController = async (req, res) => {
 //update prfole
 const updateProfileController = async (req, res) => {
   try {
-    const { 
-      email,
-      userName,
-      password,
-      fatherName,
-      motherName,
-      bloodType,
-      phoneNumber,
-      birthDate,
-      NationalID
-
-    } = req.body;
-    // console.log(req.body.email);
-    let user = await User.findById(req.user._id);
-    consolelog(user._id);
-    // console.log(user.email);
-    //password
-    if (password && password.length < 6) {
-      return res.json({ error: "يجب أن تحتوي كلمة المرور على الأقل 6 أحرف" });
+    const { email, password, userName, fatherName, motherName, bloodType, phoneNumber, birthDate, NationalID } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).send({
+        status: false,
+        message: "المستخدم غير مسجل",
+      });
     }
-    const hashedPassword = password ? await hashPassword(password) : undefined;
-    const updatedUser = await user.findByIdAndUpdate(
-     req.user._id,
-      {
-        email: email || user.email,
-        userName: userName || user.userName,
-        password: hashedPassword || user.password,
-        fatherName: fatherName || user.fatherName,
-        motherName: motherName || user.motherName,
-        bloodType: bloodType || user.bloodType,
-        phoneNumber: phoneNumber || user.phoneNumber,
-        birthDate: birthDate || user.birthDate,
-        NationalID: NationalID || user.NationalID
-      },
-      { new: true }
-    );
-    console.log(req.user);
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(200).send({
+        status: false,
+        message: "كلمة المرور غير صالحة",
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const updatedUser = await User.findOneAndUpdate({
+      email: email
+    }, {
+      userName: userName,
+      fatherName: fatherName,
+      motherName: motherName,
+      bloodType: bloodType,
+      phoneNumber: phoneNumber,
+      birthDate: birthDate,
+      NationalID: NationalID,
+      password: hashedPassword
+    }, { new: true });
+
     res.status(200).send({
-      success: true,
-      message: "تم تسجيل الدخول بنجاح",
-      updatedUser,
+      status: true,
+      message: "تم تحديث الملف الشخصي بنجاح",
+      user
+
     });
+
   } catch (error) {
     console.log(error);
-    res.status(400).send({
-      success: false,
-      message: "خطأ أثناء تحديث الملف الشخصي",
+    res.status(200).send({
+      status: false,
+      message: "خطأ في عملية تحديث الملف الشخصي",
       error,
     });
-
   }
-  console.log(req.body);
-  console.log("update profile");
-  console.log(req.user);
+
 };
 
-module.exports = { loginController, registerController , updateProfileController};
+// get user profile
+
+const getUserProfile = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(200).send({
+        status: false,
+        message: "المستخدم غير مسجل",
+      });
+    }
+
+    res.status(200).send({
+      status: true,
+      message: "تم العثور على الملف الشخصي",
+      user
+    });
+
+}catch (error) {
+  console.log(error);
+  res.status(200).send({
+    status: false,
+    message: "خطأ في عملية البحث عن الملف الشخصي",
+    error,
+  });
+}
+};
+
+
+
+module.exports = { loginController, registerController , updateProfileController , getUserProfile};
+
 
 
 
