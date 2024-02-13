@@ -4,6 +4,8 @@ require('dotenv').config();
 const JWT = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
+const {verifyToken} = require("../middleware/verifyToken");
+
 
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
@@ -42,7 +44,7 @@ const registerController = asyncHandler(async (req, res) => {
     bloodType: req.body.bloodType,
     phoneNumber: req.body.phoneNumber,
     birthDate: req.body.birthDate,
-    NationalID: req.body.NationalID
+    NationalID: req.body.NationalID,
   });
 
   const result = await user.save();
@@ -104,6 +106,7 @@ const loginController = async (req, res) => {
         _id: user._id,
         name: user.name,
         phoneNumber: user.phoneNumber,
+
       },
       token,
     });
@@ -122,7 +125,8 @@ const loginController = async (req, res) => {
 //update prfole
 const updateProfileController = async (req, res) => {
   try {
-    const { email, password, userName, fatherName, motherName, bloodType, phoneNumber, birthDate, NationalID } = req.body;
+    const { password, userName, fatherName, motherName, bloodType, phoneNumber, birthDate, NationalID } = req.body;
+    const email = req.headers['email'];
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(200).send({
@@ -160,6 +164,7 @@ const updateProfileController = async (req, res) => {
       message: "تم تحديث الملف الشخصي بنجاح",
       user
 
+
     });
 
   } catch (error) {
@@ -173,11 +178,10 @@ const updateProfileController = async (req, res) => {
 
 };
 
-// get user profile
 
 const getUserProfile = async (req, res) => {
   try {
-    const { email } = req.body;
+    const email = req.headers['email'];
     const user = await User.findOne({ email });
     
     if (!user) {
@@ -202,7 +206,6 @@ const getUserProfile = async (req, res) => {
   });
 }
 };
-
 
 
 module.exports = { loginController, registerController , updateProfileController , getUserProfile};

@@ -12,9 +12,9 @@ router.post('/register' , registerController);
 router.post('/login',loginController)
 
 //update profile
-router.put("/editProfile", updateProfileController);
+router.put("/updateProfile", updateProfileController);
 
 // get user profile
-router.get("/getprofile", getUserProfile);
+router.get("/profile", getUserProfile);
 
 module.exports = router ;
