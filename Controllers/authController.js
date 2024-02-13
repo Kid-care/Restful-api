@@ -105,7 +105,7 @@ const loginController = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
-        phoneNumber: user.phoneNumber,
+        email: user.email, 
 
       },
       token,
