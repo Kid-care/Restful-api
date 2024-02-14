@@ -106,7 +106,7 @@ const loginController = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email, 
-
+        phoneNumber: user.phoneNumber,
       },
       token,
     });
@@ -125,8 +125,9 @@ const loginController = async (req, res) => {
 //update prfole
 const updateProfileController = async (req, res) => {
   try {
-    const { password, userName, fatherName, motherName, bloodType, phoneNumber, birthDate, NationalID } = req.body;
+    const {userName, fatherName, motherName, bloodType, phoneNumber, birthDate, NationalID } = req.body;
     const email = req.headers['email'];
+    const password = req.headers['password'];
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(200).send({

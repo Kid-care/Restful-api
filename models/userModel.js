@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
     }
     ,
     phoneNumber :{
-        type: Number,
+        type: String,
         required: [true, "الرجاء إدخال رقم هاتفك"],
         trim: true,
         minlength: 11,
