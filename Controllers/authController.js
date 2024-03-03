@@ -3,7 +3,8 @@ const router = express.Router();
 require('dotenv').config();
 const JWT = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-
+const multer =require("multer");
+const path = require("path");
 const {verifyToken} = require("../middleware/verifyToken");
 
 
@@ -208,8 +209,49 @@ const getUserProfile = async (req, res) => {
 }
 };
 
+// Multer configuration for file upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      return cb(null, './Files')
+  },
+  filename: (req, file, cb) => {
+      return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+  }
+})
 
-module.exports = { loginController, registerController , updateProfileController , getUserProfile};
+const upload = multer({ storage: storage }); 
+
+//upload file
+const uploadFileController = async (req, res) =>{
+   try{const upload = multer({
+    storage: storage,
+    
+  }).array('file', 10);
+  upload(req, res, function(err){
+    if(err){
+      return res.status(400).json({
+        status: false,
+        message: "خطأ في تحميل الملف",
+        error: err
+      })
+    }
+    return res.status(200).json({
+      status: true,
+      message: "تم تحميل الملف بنجاح",
+      file: req.file
+    })
+  })} catch (error) {
+    console.log(error);
+    res.status(200).send({
+      status: false,
+      message: "خطأ في عملية تحميل الملف",
+      error,
+    });
+  }
+}
+
+
+module.exports = { loginController, registerController , updateProfileController , getUserProfile , uploadFileController};
 
 
 
