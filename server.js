@@ -8,6 +8,7 @@ const logger = require("./middleware/logger");
 const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
+const uploud_user = require('./routes/uploud/userRoute');
 dotenv.config();
 
 // express app
@@ -28,6 +29,7 @@ app.set('view engine', "ejs");
 app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use("/password",password);
+app.use('/api/v1', uploud_user);
 
 // Error Handler Middleware
 app.use(notFound);
@@ -44,3 +46,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+
+
