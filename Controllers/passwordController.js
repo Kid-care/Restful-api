@@ -13,7 +13,7 @@ const { comparePassword, hashPassword } = require("../helpers/authHelper");
  */
 
 module.exports.getForgotPasswordView = asyncHandler((req, res) => {
-  res.render("forgot-password");
+  // res.render("forgot-password");
 });
 
 
@@ -64,7 +64,9 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
        
      }
    });
-   res.render("link-send");
+
+   res.status(200).json({message: "تم إرسال الرابط بنجاح"});
+  //  res.render("link-send");
  });
 
 
@@ -84,7 +86,8 @@ module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
   const secret = process.env.JWT_SECRET + user.password;
   try {
     jwt.verify(req.params.token, secret); // if token is expired it will throw an error
-    res.render("reset-password", { email: user.email });  
+    res.status(200).json({ message: "Message from server" });
+    // res.render("reset-password", { email: user.email });  
   } catch (error) {
     console.log(error);
     res.json({ message: "Error" });
@@ -117,10 +120,11 @@ module.exports.resetThePassword = asyncHandler(async (req, res) => {
     req.body.password = await bcrypt.hash(req.body.password, salt);
     user.password = req.body.password;
     await user.save();
-    res.render("success-password");
+    res.status(200).json({ message: "تم تغيير كلمة المرور بنجاح" });
+    // res.render("success-password");
   } catch (error) {
     console.log(error);
     res.json({ message: "Error" });
   }
-  
 })
+
