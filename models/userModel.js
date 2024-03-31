@@ -61,6 +61,9 @@ const userSchema = new mongoose.Schema(
         required: [true, "الرجاء إدخال الرقم الوطني للطفل"],
         trim: true,
     
+    },
+    cloudinaryFolder: {
+      type: String
     }
   },
   { timestamps: true }

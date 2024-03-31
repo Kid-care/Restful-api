@@ -8,7 +8,7 @@ const logger = require("./middleware/logger");
 const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
-const uploud_user = require('./routes/uploud/userRoute');
+const uploud_user = require('./routes/photoRoute');
 dotenv.config();
 
 // express app

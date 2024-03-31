@@ -34,3 +34,64 @@ forget password
 url : https://kid-care.onrender.com/password/forgot-password
 
 
+
+
+// controllers/photoController.js
+
+const cloudinary = require('cloudinary').v2;
+const User = require('../models/userModel');
+const Photo = require('../models/photoModel');
+
+
+const uploadPhoto = async (req, res) => {
+     try {
+      const email = req.body.email;
+      console.log(email);
+      // Check if user exists
+      let user = await User.findOne({ email });
+      if (!user) {
+        user = await User.create({ email });
+      }
+
+      console.log(user);
+
+      // Upload photo to Cloudinary
+      const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path);
+
+      // Save photo metadata to MongoDB
+      const photo = await Photo.create({
+        userId,
+        imageUrl: cloudinaryResponse.url
+      });
+
+      return res.status(200).json({ message: 'Photo uploaded successfully', photo });
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const getUserPhotos = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        // Fetch photos for the user from MongoDB
+        const photos = await Photo.find({ userId });
+  
+        return res.status(200).json({ photos });
+      } catch (error) {
+        console.error('Error fetching user photos:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+}
+
+module.exports = {
+    uploadPhoto,
+    getUserPhotos
+}
+
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// In your route definition
+router.post('/uploadPhoto', upload.single('photo'), userController.uploadPhoto);
