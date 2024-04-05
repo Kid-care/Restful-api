@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 
+const frontendBaseURL = process.env.FRONTEND_BASE_URL || "http://localhost";
+const dynamicPortNumber = process.env.PORT || 3000;
 /**
  *  @desc    Get Forgot Password View
  *  @route   /password/forgot-password
@@ -35,8 +37,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
     expiresIn: "10m",
   });
 
-  const link = `https://localhost:3000/password/reset-password/${user._id}/${token}`;
- // res.json({message:'Click on the link', resetPasswordLink: link});
+  const link = `${frontendBaseURL}:${dynamicPortNumber}/password/reset-password/${user._id}/${token}`;
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
