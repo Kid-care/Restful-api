@@ -9,6 +9,7 @@ const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
 const uploud_user = require('./routes/photoRoute');
+const profile = require('./routes/profileRoute');
 dotenv.config();
 
 // express app
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use("/password",password);
 app.use('/api/v1', uploud_user);
+app.use('/api/v1', profile);
 
 // Error Handler Middleware
 app.use(notFound);

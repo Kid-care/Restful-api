@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 
 const frontendBaseURL = process.env.FRONTEND_BASE_URL || "http://localhost";
-const dynamicPortNumber = process.env.PORT || 3000;
+const dynamicPortNumber = 3000;
 /**
  *  @desc    Get Forgot Password View
  *  @route   /password/forgot-password
@@ -37,38 +37,40 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
     expiresIn: "10m",
   });
 
-  const link = `${frontendBaseURL}:${dynamicPortNumber}/password/reset-password/${user._id}/${token}`;
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-         user: process.env.USER_EMAIL,
-         pass: process.env.USER_PASS,
-      }
+  //http://localhost:3000/reset-password?token=abcdef123456&email=user@example.com
+
+  const link = `${frontendBaseURL}:${dynamicPortNumber}/password/reset-password?token=${token}`;
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.USER_EMAIL,
+      pass: process.env.USER_PASS,
+    }
   });
 
-   const mailOptions = {
-     from: process.env.USER_EMAIL,
-     to: user.email,
-     subject: "Reset Password",
-     html: `<div>
+  const mailOptions = {
+    from: process.env.USER_EMAIL,
+    to: user.email,
+    subject: "Reset Password",
+    html: `<div>
                <h4> Hi ${user.userName}, Click on the link below to reset your password </h4>
                <p>${link}</p>
            </div>`
-   }
+  }
 
-   transporter.sendMail(mailOptions, function(error, success){
-     if(error){
-       console.log(error);
-       res.status(500).json({message: "حدث خطأ ما"});
-     } else {
-       console.log("Email sent: " + success.response);
-       
-     }
-   });
+  transporter.sendMail(mailOptions, function (error, success) {
+    if (error) {
+      console.log(error);
+      res.status(500).json({ message: "حدث خطأ ما" });
+    } else {
+      console.log("Email sent: " + success.response);
 
-   res.status(200).json({message: "تم إرسال الرابط بنجاح"});
+    }
+  });
+
+  res.status(200).json({ message: "تم إرسال الرابط بنجاح" });
   //  res.render("link-send");
- });
+});
 
 
 /**
@@ -104,13 +106,26 @@ module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
 
 module.exports.resetThePassword = asyncHandler(async (req, res) => {
   const { error } = validateChangePassword(req.body);
-   if(error) {
+  if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  const user = await User.findById(req.params.userId);
-  if (!user) {
-    return res.status(404).json({ message: "المستخدم غير موجود" });
+  const token = req.params.token;
+
+  if (!token) {
+    return res.status(401).send({
+      status: false,
+      message: "توكن مفقود",
+    });
+  }
+
+  const user = await getUserFromToken(token);
+
+  if(!user){
+    return res.status(404).send({
+      status: false,
+      message: "المستخدم غير مسجل",
+    });
   }
 
   const secret = process.env.JWT_SECRET + user.password;
