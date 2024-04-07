@@ -39,7 +39,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
 
   //http://localhost:3000/reset-password?token=abcdef123456&email=user@example.com
 
-  const link = `${frontendBaseURL}:${dynamicPortNumber}/password/reset-password?token=${token}`;
+  const link = `${frontendBaseURL}:${dynamicPortNumber}/password/reset-password/${token}`;
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
