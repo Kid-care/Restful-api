@@ -34,9 +34,9 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
-  const secret = process.env.JWT_SECRET + user.password;
-  const token = jwt.sign({ email: user.email, id: user.id }, secret, {
-    expiresIn: "10m",
+  
+  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "15m",
   });
 
   //http://localhost:3000/reset-password?token=abcdef123456&email=user@example.com
@@ -92,7 +92,6 @@ module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
   try {
     jwt.verify(req.params.token, secret); // if token is expired it will throw an error
     res.status(200).json({ message: "Message from server" });
-    // res.render("reset-password", { email: user.email });  
   } catch (error) {
     console.log(error);
     res.json({ message: "Error" });
@@ -112,37 +111,32 @@ module.exports.resetThePassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  const token = req.params.token;
-
-  if (!token) {
-    return res.status(401).send({
-      status: false,
-      message: "توكن مفقود",
-    });
-  }
-
-  const user = await getUserFromToken(token);
-
-  if(!user){
-    return res.status(404).send({
-      status: false,
-      message: "المستخدم غير مسجل",
-    });
-  }
-
-  const secret = process.env.JWT_SECRET + user.password;
+  let userId;
   try {
-    jwt.verify(req.params.token, secret); // if token is expired it will throw an error
-
-    const salt = await bcrypt.genSalt(10); // generate salt
-    req.body.password = await bcrypt.hash(req.body.password, salt);
-    user.password = req.body.password;
-    await user.save();
-    res.status(200).json({ message: "تم تغيير كلمة المرور بنجاح" });
-    // res.render("success-password");
-  } catch (error) {
-    console.log(error);
-    res.json({ message: "Error" });
+    const decoded = jwt.verify(req.params.token, process.env.JWT_SECRET);
+    userId = decoded._id;
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ message: 'التوكن غير صالح' });
   }
-})
+
+  // Find the user by ID
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: 'المستخدم غير موجود' });
+  }
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'تم تغيير كلمة المرور بنجاح' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
