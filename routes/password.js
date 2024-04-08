@@ -16,7 +16,7 @@ router
 
 
 // /password/reset-password/:userId/:token
-router.route("/reset-password/:userId/:token")
+router.route("/reset-password/:token")
   .get(getResetPasswordView)
   .post(resetThePassword)
 
