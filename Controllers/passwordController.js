@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 
+const { getUserFromToken } = require('../helpers/getuserfromToken');
+
 const frontendBaseURL = process.env.FRONTEND_BASE_URL || "http://localhost";
 const dynamicPortNumber = 3000;
 /**
