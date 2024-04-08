@@ -1,7 +1,9 @@
 const { User } = require('../models/userModel');
 const cloudinary = require('cloudinary').v2;
 
-cloudinary.config({ 
+const { getUserFromToken } = require('../helpers/getuserfromToken');
+
+cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET
@@ -9,12 +11,25 @@ cloudinary.config({
 
 const uploadPhoto = async (req, res) => {
   try {
-    const { email } = req.headers;
-    const user = await User.findOne({ email });
+    const token = req.headers['authorization'];
+
+    if (!token) {
+      return res.status(401).send({
+        status: false,
+        message: "توكن مفقود",
+      });
+    }
+
+    const user = await getUserFromToken(token);
 
     if (!user) {
-      return res.status(404).json({ message: 'المستخدم غير موجود' });
+      return res.status(404).send({
+        status: false,
+        message: "المستخدم غير مسجل",
+      });
     }
+
+    const email = user.email;
 
     let folder;
     if (!user.cloudinaryFolder) {
@@ -37,8 +52,26 @@ const uploadPhoto = async (req, res) => {
 
 const getUserPhotos = async (req, res) => {
   try {
-    const { email } = req.headers;
-    const user = await User.findOne({ email });
+
+    const token = req.headers['authorization'];
+
+    if (!token) {
+      return res.status(401).send({
+        status: false,
+        message: "توكن مفقود",
+      });
+    }
+
+    const user = await getUserFromToken(token);
+
+    if (!user) {
+      return res.status(404).send({
+        status: false,
+        message: "المستخدم غير مسجل",
+      });
+    }
+
+    const email = user.email;
 
     console.log(email);
 
@@ -51,7 +84,7 @@ const getUserPhotos = async (req, res) => {
     }
 
     const photos = await cloudinary.search
-      .expression(`folder:${user.cloudinaryFolder}`) 
+      .expression(`folder:${user.cloudinaryFolder}`)
       .execute();
 
     return res.status(200).json({ photos: photos.resources });
