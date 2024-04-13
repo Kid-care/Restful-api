@@ -86,7 +86,7 @@ const updateUserProfile = async (req, res) => {
         const {userName, fatherName, motherName, bloodType, phoneNumber, birthDate, NationalID} = req.body;
 
         const updatedUser = await User.findByIdAndUpdate({
-            _id: id
+            _id: user._id
           }, {
             userName: userName,
             fatherName: fatherName,
