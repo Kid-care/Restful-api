@@ -100,7 +100,7 @@ const updateUserProfile = async (req, res) => {
         res.status(200).send({
             status: true,
             message: "تم تحديث الملف الشخصي بنجاح",
-            user
+            user : updatedUser
         });
 
     } catch (error) {
