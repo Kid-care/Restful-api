@@ -6,20 +6,7 @@ const nodemailer = require("nodemailer");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 
 const { getUserFromToken } = require('../helpers/getuserfromToken');
-
-const frontendBaseURL = process.env.FRONTEND_BASE_URL || "http://localhost";
-const dynamicPortNumber = 3000;
-/**
- *  @desc    Get Forgot Password View
- *  @route   /password/forgot-password
- *  @method  GET
- *  @access  public
- */
-
-module.exports.getForgotPasswordView = asyncHandler((req, res) => {
-  // res.render("forgot-password");
-});
-
+const { text } = require("express");
 
 /**
  *  @desc    Send Forgot Password Link
@@ -28,19 +15,18 @@ module.exports.getForgotPasswordView = asyncHandler((req, res) => {
  *  @access  public
  */
 
-module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
+
+const sendForgotPasswordLink = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
-  
   const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "15m",
   });
 
-  //http://localhost:3000/reset-password?token=abcdef123456&email=user@example.com
-
+  
   const link = `http://localhost:3000/password/reset-password/${token}`;
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -54,10 +40,7 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
     from: process.env.USER_EMAIL,
     to: user.email,
     subject: "Reset Password",
-    html: `<div>
-               <h4> Hi ${user.userName}, Click on the link below to reset your password </h4>
-               <p>${link}</p>
-           </div>`
+    text: `Hi ${user.userName}, Click on the link below to reset your password ${link}`  
   }
 
   transporter.sendMail(mailOptions, function (error, success) {
@@ -71,41 +54,17 @@ module.exports.sendForgotPasswordLink = asyncHandler(async (req, res) => {
   });
 
   res.status(200).json({ message: "تم إرسال الرابط بنجاح" });
-  //  res.render("link-send");
-});
 
-
-/**
- *  @desc    Get Reset Password View
- *  @route   /password/reset-password/:userId/:token
- *  @method  GET
- *  @access  public
- */
-
-module.exports.getResetPasswordView = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.userId);
-  if (!user) {
-    return res.status(404).json({ message: "المستخدم غير موجود" });
-  }
-
-  const secret = process.env.JWT_SECRET + user.password;
-  try {
-    jwt.verify(req.params.token, secret); // if token is expired it will throw an error
-    res.status(200).json({ message: "Message from server" });
-  } catch (error) {
-    console.log(error);
-    res.json({ message: "Error" });
-  }
-});
+};
 
 /**
  *  @desc    Reset The Password
- *  @route   /password/reset-password/:userId/:token
+ *  @route   /password/reset-password/:token
  *  @method  POST
  *  @access  public
  */
 
-module.exports.resetThePassword = asyncHandler(async (req, res) => {
+const resetThePassword = async (req , res) =>{
   const { error } = validateChangePassword(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -138,5 +97,8 @@ module.exports.resetThePassword = asyncHandler(async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-});
 
+};
+
+
+module.exports = {sendForgotPasswordLink , resetThePassword};
