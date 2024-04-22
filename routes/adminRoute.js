@@ -3,7 +3,7 @@ const router = express.Router();
 const asyncHandler = require("express-async-handler")
 const ROLES_LIST = require('../config/roles_list')
 const verifyRoles = require('../middleware/verifyRoles')
-const {getUserProfile, getAllUsers , createUser , getUser , addData , deleteData , updateUserData} = require('../Controllers/profileController');
+const {getUserProfile} = require('../Controllers/profileController');
 const { body } = require('express-validator');
 
 

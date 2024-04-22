@@ -70,11 +70,10 @@ const userSchema = new mongoose.Schema(
     cloudinaryFolder: {
       type: String
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
-
-    }
+    role: {
+      type: String,
+      default: "user",
+    },
   },
   { timestamps: true }
 );

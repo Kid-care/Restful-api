@@ -22,8 +22,14 @@ const sendForgotPasswordLink = async (req, res) => {
     return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
-  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "15m",
+  const token = await jwt.sign({
+    "userInfo":{
+      "username": user.userName,
+      "roles":roles
+    }, _id: user._id 
+
+  }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
   });
 
   

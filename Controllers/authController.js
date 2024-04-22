@@ -100,16 +100,19 @@ const loginController = async (req, res) => {
       });
     }
 
-    const roles = Object.values(foundUser.roles);
+    const roles = Object.values(user.role);
     //token
+
     const token = await JWT.sign({
       "userInfo":{
-        "username": foundUser.username,
+        "username": user.userName,
         "roles":roles
-      }
-    },{ _id: user._id }, process.env.JWT_SECRET, {
+      }, _id: user._id 
+
+    }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+
     res.status(200).send({
       status: true,
       message: "تم تسجيل الدخول بنجاح",
@@ -132,11 +135,4 @@ const loginController = async (req, res) => {
 };
 
 
-
-
-
 module.exports = { loginController, registerController };
-
-
-
-
