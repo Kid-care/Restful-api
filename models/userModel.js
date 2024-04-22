@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema(
       required: [true, "الرجاء إدخال اسمك"],
       trim: true,
     },
+    role: {
+      type: String,
+      enum: ['user', 'admin'], // Example roles: user, admin
+    
+    },
     password: {
       type: String,
       required: [true, "الرجاء إدخال كلمة المرور الخاصة بك"],
@@ -64,6 +69,11 @@ const userSchema = new mongoose.Schema(
     },
     cloudinaryFolder: {
       type: String
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+
     }
   },
   { timestamps: true }
@@ -135,7 +145,8 @@ function validateRegisterUser(obj) {
   }),
   bloodType: joi.string().required().messages({
       'any.required': 'يجب إدخال فصيلة الدم'
-  })
+  }),
+  isAdmin: joi.boolean().default(false), // Validate isAdmin as a boolean
    
   });
   return schema.validate(obj);

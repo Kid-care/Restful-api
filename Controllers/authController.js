@@ -14,6 +14,8 @@ const { User
   , validateRegisterUser
 } = require('../models/userModel');
 const asyncHandler = require("express-async-handler");
+const isAdmin = require("../middleware/isAdmin");
+const { userInfo } = require("os");
 
 
 //register controller
@@ -39,6 +41,7 @@ const registerController = asyncHandler(async (req, res) => {
   user = new User({
     email: req.body.email,
     userName: req.body.userName,
+    roles: {"User":2001},
     password: hashedPassword,
     fatherName: req.body.fatherName,
     motherName: req.body.motherName,
@@ -96,8 +99,15 @@ const loginController = async (req, res) => {
         message: "كلمة المرور غير صالحة",
       });
     }
+
+    const roles = Object.values(foundUser.roles);
     //token
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    const token = await JWT.sign({
+      "userInfo":{
+        "username": foundUser.username,
+        "roles":roles
+      }
+    },{ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
     res.status(200).send({
@@ -120,6 +130,8 @@ const loginController = async (req, res) => {
     });
   }
 };
+
+
 
 
 
