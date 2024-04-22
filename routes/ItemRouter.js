@@ -1,5 +1,5 @@
 const { createItem,getItemController
-} = require('../controllers/ItemController');
+} = require('../Controllers/ItemController');
 const {isAdmin } = require('../middleware/isAdmin');
 
 const express = require('express');
