@@ -10,6 +10,9 @@ const helmet = require("helmet");
 const cors = require("cors");
 const uploud_user = require('./routes/photoRoute');
 const profile = require('./routes/profileRoute');
+const categoryRoutes =  require("./routes/categoryRouters")
+const ItemRoutes =  require("./routes/ItemRouter")
+
 dotenv.config();
 
 // express app
@@ -32,6 +35,8 @@ app.use('/api/v1/auth', authRouter);
 app.use("/password",password);
 app.use('/api/v1', uploud_user);
 app.use('/api/v1', profile);
+app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/Item", ItemRoutes);
 
 // Error Handler Middleware
 app.use(notFound);
