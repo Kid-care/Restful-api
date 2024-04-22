@@ -5,7 +5,6 @@ const {getUserProfile , updateUserProfile} = require('../Controllers/profileCont
 const { body } = require('express-validator');
 
 
-
 // get user profile
 router.get("/getprofile", getUserProfile);
 
