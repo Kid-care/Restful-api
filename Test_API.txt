@@ -34,3 +34,99 @@ forget password
 url : https://kid-care.onrender.com/password/forgot-password
 
 //http://localhost:3000/reset-password?token=abcdef123456&email=user@example.com
+
+
+
+// const addAdmin = async (req, res) =>{
+//   try{
+//     const token = req.headers['authorization'];
+//   if (!token) {
+//       return res.status(401).send({
+//           status: false,
+//           message: "توكن مفقود",
+//       });
+//   }
+
+//   const user = await getUserFromToken(token);
+
+//   if (!user) {
+//       return res.status(404).send({
+//           status: false,
+//           message: "ال owner غير موجود",
+//       });
+//   }
+
+//   if (user.roles !== 'Owner') {
+//       return res.status(403).send({
+//           status: false,
+//           message: "غير مسموح لك بإضافة ادمن",
+//       });
+//   }
+
+//   const { error } = validateRegisterAdmin(req.body);
+//   if (error) {
+//       return res.status(400).json({
+//           status: false,
+//           message: error.details[0].message
+//       });
+//   }
+
+//   let admin = await User.findOne({ email: req.body.email });
+//   if (admin) {
+//       return res.status(400).json({
+//           status: false,
+//           message: "هذا الادمن مسجل بالفعل"
+//       })
+//   }
+
+//   const salt = await bcrypt.genSalt(10);
+//   const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+//   admin = new Admin({
+//       email: req.body.email,
+//       name: req.body.name,
+//       phoneNumber: req.body.phoneNumber,
+//       password: hashedPassword,
+//       city: req.body.city,
+//       specialization: req.body.specialization,
+//   });
+
+//   const result = await admin.save();
+//   res.status(201).json({
+//       status: true,
+//       message: "تم إنشاء الادمن بنجاح",
+//       admin: {
+//           _id: result._id,
+//           email: result.email,
+//           name: result.name,
+//           phoneNumber: result.phoneNumber,
+//           password: result.password,
+//           city: result.city,
+//           specialization: result.specialization,
+//       }
+//   });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "حدث خطأ ما" });
+//   }
+// }
+  
+module.exports = {addAdmin};
+
+
+// Import necessary modules and models
+const express = require('express');
+const asyncHandler = require('../path/to/asyncHandler');
+const Admin = require('../models/Admin');
+const bcrypt = require('bcrypt');
+const { validateRegisterAdmin } = require('../validators/adminValidator');
+
+const router = express.Router();
+
+// Define addAdmin route handler wrapped with asyncHandler
+router.post('/admins/add', asyncHandler(async (req, res) => {
+    // Your addAdmin route handler logic goes here
+}));
+
+// Export the router
+module.exports = router;

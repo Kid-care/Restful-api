@@ -11,7 +11,9 @@ const cors = require("cors");
 const uploud_user = require('./routes/photoRoute');
 const profile = require('./routes/profileRoute');
 const categoryRoutes =  require("./routes/categoryRouters")
-const ItemRoutes =  require("./routes/ItemRouter")
+const ItemRoutes =  require("./routes/ItemRouter");
+const addAdmin = require('./routes/ownerRoute');
+
 
 dotenv.config();
 
@@ -37,6 +39,7 @@ app.use('/api/v1', uploud_user);
 app.use('/api/v1', profile);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/Item", ItemRoutes);
+app.use("/api/v1/owner", addAdmin);
 
 // Error Handler Middleware
 app.use(notFound);
@@ -46,7 +49,6 @@ app.use(errorHandler)
 // dp connection
 const database = require('./config/db');
 database();
-
 
 const PORT = process.env.PORT || 3000;
 
