@@ -70,10 +70,12 @@ const userSchema = new mongoose.Schema(
     cloudinaryFolder: {
       type: String
     },
-    role: {
+    roles:{
       type: String,
-      default: "user",
-    },
+      enum: ['user', 'admin' , 'owner'], 
+      default: 'user', 
+      required: false,
+    }
   },
   { timestamps: true }
 );
@@ -82,7 +84,7 @@ const User = mongoose.model("User", userSchema);
 
 //Generate Token
 userSchema.methods.generateToken = function(){
-  return jwt.sign({id: this._id ,isAdmin: this.isAdmin} , process.env.JWT_SECRET_KEY);
+  return jwt.sign({id: this._id , role: this.role} , process.env.JWT_SECRET)
 }
 
 function validateRegisterUser(obj) {
@@ -145,8 +147,10 @@ function validateRegisterUser(obj) {
   bloodType: joi.string().required().messages({
       'any.required': 'يجب إدخال فصيلة الدم'
   }),
-  isAdmin: joi.boolean().default(false), // Validate isAdmin as a boolean
-   
+  roles: joi.string().valid('user', 'admin', 'owner').default('user').optional().messages({
+    'string.base': 'يجب أن يكون دور المستخدم نصًا',
+    'string.empty': 'يجب ألا يكون دور المستخدم فارغًا',
+  })
   });
   return schema.validate(obj);
 }

@@ -1,5 +1,5 @@
 const responseStatus = require("../handlers/responseStatus.handler");
-const Admin = require("../models/admin.model");
+const Admin = require("../models/adminModel");
 
 const isAdmin = async (req, res, next) => {
   if (! req.user.isAdmin){ {

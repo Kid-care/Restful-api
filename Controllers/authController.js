@@ -41,7 +41,7 @@ const registerController = asyncHandler(async (req, res) => {
   user = new User({
     email: req.body.email,
     userName: req.body.userName,
-    roles: {"User":2001},
+    roles: req.body.roles || 'user',
     password: hashedPassword,
     fatherName: req.body.fatherName,
     motherName: req.body.motherName,
@@ -65,7 +65,8 @@ const registerController = asyncHandler(async (req, res) => {
       bloodType: result.bloodType,
       phoneNumber: result.phoneNumber,
       birthDate: result.birthDate,
-      NationalID: result.NationalID
+      NationalID: result.NationalID,
+      roles : result.roles
     }
   });
 });
@@ -100,7 +101,7 @@ const loginController = async (req, res) => {
       });
     }
 
-    const roles = Object.values(user.role);
+    const roles = user.roles;
     //token
 
     const token = await JWT.sign({
@@ -121,6 +122,7 @@ const loginController = async (req, res) => {
         name: user.name,
         email: user.email, 
         phoneNumber: user.phoneNumber,
+        roles : user.roles
       },
       token,
     });
