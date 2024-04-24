@@ -6,14 +6,13 @@ const slugify = require("slugify");
 
  const createItem = async (req, res) => {
     try {
-        const { name, description } =
+        const { name } =
         req.body;
   
       switch (true) {
         case !name:
           return res.status(500).send({ error: "Name is Required" });
-        case !description:
-          return res.status(500).send({ error: "Description is Required" });
+
       }
   // if name is already exist
       const isExist = await ItemModel
@@ -37,7 +36,7 @@ const slugify = require("slugify");
   const getItemController = async (req, res) => {
     try {
       
-      const { category } = req.body;
+      const { category } = req.headers;
       const items = await ItemModel
         .find({ category })
         .populate("category");

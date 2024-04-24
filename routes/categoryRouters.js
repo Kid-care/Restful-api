@@ -5,12 +5,13 @@ const { createCategory,
     singleCategoryController
   } = require('../Controllers/categoryController.js')
   const {isAdmin } = require('../middleware/isAdmin.js')
+  const {isOwner} = require('../middleware/isOwner.js')
+
 
 const express = require('express');
 const router = express.Router();
 
-router.post('/create', createCategory);
-//router.post('/create',isAdmin , createCategory); => to make this route only accessible to admin
+router.post('/create' , createCategory); 
 router.put('/update/:id', updateCategory);
 router.delete('/delete/:id', deleteCategory);
 router.get('/all', categoryControlller);

@@ -1,9 +1,11 @@
 const { createItem,getItemController
 } = require('../Controllers/ItemController');
-const {isAdmin } = require('../middleware/isAdmin');
+const {isAdmin} = require('../middleware/isAdmin');
+const {isOwner} = require('../middleware/isOwner');
 
 const express = require('express');
 const router = express.Router()
+
 
 //router.post('/create_Item',isAdmin, createItem);
 router.post('/create_Item', createItem);

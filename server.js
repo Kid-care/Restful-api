@@ -14,7 +14,6 @@ const categoryRoutes =  require("./routes/categoryRouters")
 const ItemRoutes =  require("./routes/ItemRouter");
 const addAdmin = require('./routes/ownerRoute');
 
-
 dotenv.config();
 
 // express app
