@@ -11,6 +11,8 @@ const { verifyToken } = require("../middleware/verifyToken");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
 const { User, validateRegisterUser } = require('../models/userModel');
+const {Admin, validateRegisterAdmin} = require('../models/adminModel');
+const {Owner, validateRegisterOwner, validateLoginOwner} = require('../models/ownerModel');
 const asyncHandler = require("express-async-handler");
 
 const getUserFromToken = async (token) => {
@@ -20,6 +22,13 @@ const getUserFromToken = async (token) => {
     return await User.findById(id);
 };
 
+const getOwnerFromToken = async (token) => {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-module.exports = {getUserFromToken}
+    const id = decoded._id;
+    return await Owner.findById(id);
+};
+
+
+module.exports = {getUserFromToken , getOwnerFromToken};
 
