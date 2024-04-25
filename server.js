@@ -13,6 +13,7 @@ const profile = require('./routes/profileRoute');
 const categoryRoutes =  require("./routes/categoryRouters")
 const ItemRoutes =  require("./routes/ItemRouter");
 const addAdmin = require('./routes/ownerRoute');
+const  AdminCategory = require("./routes/AdminCategory");
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use('/api/v1', profile);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/Item", ItemRoutes);
 app.use("/api/v1/owner", addAdmin);
+app.use("/api/v1/Admin", AdminCategory);
 
 // Error Handler Middleware
 app.use(notFound);
