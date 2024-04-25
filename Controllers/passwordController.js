@@ -22,17 +22,19 @@ const sendForgotPasswordLink = async (req, res) => {
     return res.status(404).json({ message: "المستخدم غير موجود" });
   }
 
+  const roles = user.roles;
+
   const token = await jwt.sign({
-    "userInfo":{
+    "userInfo": {
       "username": user.userName,
-      "roles":roles
-    }, _id: user._id 
+      "roles": roles
+    }, _id: user._id
 
   }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 
-  
+
   const link = `http://localhost:3000/password/reset-password/${token}`;
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -46,7 +48,7 @@ const sendForgotPasswordLink = async (req, res) => {
     from: process.env.USER_EMAIL,
     to: user.email,
     subject: "Reset Password",
-    text: `Hi ${user.userName}, Click on the link below to reset your password ${link}`  
+    text: `Hi ${user.userName}, Click on the link below to reset your password ${link}`
   }
 
   transporter.sendMail(mailOptions, function (error, success) {
@@ -70,7 +72,7 @@ const sendForgotPasswordLink = async (req, res) => {
  *  @access  public
  */
 
-const resetThePassword = async (req , res) =>{
+const resetThePassword = async (req, res) => {
   const { error } = validateChangePassword(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -107,4 +109,4 @@ const resetThePassword = async (req , res) =>{
 };
 
 
-module.exports = {sendForgotPasswordLink , resetThePassword};
+module.exports = { sendForgotPasswordLink, resetThePassword };
