@@ -14,6 +14,7 @@ const categoryRoutes =  require("./routes/categoryRouters")
 const ItemRoutes =  require("./routes/ItemRouter");
 const Owner = require('./routes/ownerRoute');
 const AdminCategory = require("./routes/AdminCategory");
+const adminRoute = require("./routes/adminRoute");
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/Item", ItemRoutes);
 app.use("/api/v1/owner", Owner);
 app.use("/api/v1/Admin", AdminCategory);
+app.use("/api/v1/auth/Admin", adminRoute);
 
 // Error Handler Middleware
 app.use(notFound);

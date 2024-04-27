@@ -30,5 +30,12 @@ const getOwnerFromToken = async (token) => {
 };
 
 
-module.exports = {getUserFromToken , getOwnerFromToken};
+const getAdminFromToken = async (token) => {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const id = decoded._id;
+    return await Admin.findById(id);
+}
+
+module.exports = {getUserFromToken , getOwnerFromToken , getAdminFromToken};
 

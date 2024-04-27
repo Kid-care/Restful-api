@@ -5,20 +5,11 @@ const ROLES_LIST = require('../config/roles_list')
 const verifyRoles = require('../middleware/verifyRoles')
 const {getUserProfile} = require('../Controllers/profileController');
 const { body } = require('express-validator');
+const {loginAdmin} = require('../Controllers/adminController');
 
 
 
 
-// Admin route to view userProfile (requires admin role)
-router.get('/Admin', verifyRoles(ROLES_LIST.Admin), adminController.getUser);
-
-// Admin route to add in userProfile (requires admin role)
-router.post('/Admin', verifyRoles(ROLES_LIST.Admin), adminController.addData);
-
-// Admin route to delete in userProfile (requires admin role)
-router.delete('/Admin', verifyRoles(ROLES_LIST.Admin), adminController.deleteData);
-
-// Admin route to update in userProfile (requires admin role)
-router.put('/Admin', verifyRoles(ROLES_LIST.Admin), adminController.updateUserData);
+router.post("/loginAdmin" , loginAdmin);
 
 module.exports = router;

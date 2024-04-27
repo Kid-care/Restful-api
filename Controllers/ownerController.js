@@ -379,7 +379,7 @@ const loginOwner = asyncHandler(async (req, res) => {
         });
     }
 
-    const token = JWT.sign({ _id: owner._id, role: owner.role }, process.env.JWT_SECRET);
+    const token = JWT.sign({ _id: owner._id, roles: owner.roles }, process.env.JWT_SECRET);
 
     res.header("auth-token", token).status(200).json({
         status: true,

@@ -11,9 +11,11 @@ const { verifyToken } = require("../middleware/verifyToken");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
 const { User, validateRegisterUser } = require('../models/userModel');
+const {Admin , validateRegisterAdmin , validateLoginAdmin} = require('../models/adminModel');
 const asyncHandler = require("express-async-handler");
 
-const {getUserFromToken} = require("../helpers/getuserfromToken");
+const {getUserFromToken , getAdminFromToken} = require("../helpers/getuserfromToken");
+const { resolveNs } = require("dns");
 
 
 // admin  view userProfile
@@ -169,21 +171,44 @@ const updateInUserProfile = async (req, res) => {
 };
 
 
+const loginAdmin = asyncHandler(async (req, res) => {
 
 
+    const { error } = validateLoginAdmin(req.body);
 
+    if (error) {
+        return res.status(400).json({
+            status: false,
+            message: error.details[0].message
+        });
+    }
 
+    let admin = await Admin.findOne({ email: req.body.email });
 
+    if (!admin) {
+        return res.status(400).json({
+            status: false,
+            message: "الايميل خاطئ"
+        });
+    }
 
+    const validPassword = await bcrypt.compare(req.body.password, admin.password);
 
+    if (!validPassword) {
+        return res.status(400).json({
+            status: false,
+            message: "كلمة المرور خاطئة"
+        });
+    }
 
+    const token = jwt.sign({ _id: admin._id, roles: admin.roles }, process.env.JWT_SECRET);
 
+    res.header("auth-token", token).status(200).json({
+        status: true,
+        message: "تم تسجيل الدخول بنجاح",
+        token
+    });
 
+});
 
-
-
-
-
-
-
-            
+module.exports = {loginAdmin: loginAdmin};
