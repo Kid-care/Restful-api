@@ -29,7 +29,7 @@ const ItemSchema = new mongoose.Schema(
     ,
     doctor:{
         type: String,
-        required: true,
+        required: false,
     }
   } 
   ,
