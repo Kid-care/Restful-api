@@ -35,7 +35,24 @@ const search_vaccines = asyncHandler(async (req, res) => {
     res.status(200).json({searchResult});
 })
 
-module.exports = {search_diseases, search_countries, search_vaccines};
+
+// search for user
+
+const userSearch = (req, res) => {
+    try{
+        const {email , NationalID} = req.body;
+        User.findOne({email , NationalID}).then(user => {
+            if(!user){
+                return res.status(404).json({message: "المستخدم غير موجود"});
+            }
+            res.status(200).json({user});
+        })
+    }catch(error) {
+        res.status(500).json({message: "حدث خطأ ما"});
+    }
+}
+
+module.exports = {search_diseases, search_countries, search_vaccines , userSearch};
 
 
 

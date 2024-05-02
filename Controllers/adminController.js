@@ -184,6 +184,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
     }
 
     let admin = await Admin.findOne({ email: req.body.email });
+    console.log(admin);
 
     if (!admin) {
         return res.status(400).json({
