@@ -45,11 +45,13 @@ const userSearch = (req, res) => {
             if(!user){
                 return res.status(404).json({
                     status: false,
+                
                     message: "المستخدم غير موجود"
                 });
             }
             res.status(200).json({
                 status: true,
+                message: "تم العثور على المستخدم",
                 user
             });
         })
