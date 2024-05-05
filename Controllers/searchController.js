@@ -43,12 +43,21 @@ const userSearch = (req, res) => {
         const {email , NationalID} = req.body;
         User.findOne({email , NationalID}).then(user => {
             if(!user){
-                return res.status(404).json({message: "المستخدم غير موجود"});
+                return res.status(404).json({
+                    status: false,
+                    message: "المستخدم غير موجود"
+                });
             }
-            res.status(200).json({user});
+            res.status(200).json({
+                status: true,
+                user
+            });
         })
     }catch(error) {
-        res.status(500).json({message: "حدث خطأ ما"});
+        res.status(500).json({
+            status: false,
+            message: "حدث خطأ ما"
+        });
     }
 }
 
