@@ -52,7 +52,7 @@ const registerController = asyncHandler(async (req, res) => {
   });
 
   const result = await user.save();
-  res.status(201).json({
+  res.status(200).json({
     status: "true",
     message: "تم إنشاء المستخدم بنجاح",
     user: {

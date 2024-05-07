@@ -25,8 +25,7 @@ const ItemSchema = new mongoose.Schema(
       ref: "user",
       required: true,
      
-    }
-    ,
+    },
     doctor:{
         type: String,
         required: false,

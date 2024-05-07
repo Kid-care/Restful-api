@@ -4,33 +4,28 @@ const categoryModel = require("../models/categoryModel");
 const fs = require("fs");
 const slugify = require("slugify");
 
- const createItem = async (req, res) => {
+const createItem = async (req, res) => {
     try {
-        const { name } =
-        req.body;
-  
-      switch (true) {
-        case !name:
-          return res.status(500).send({ error: "Name is Required" });
-
+      const { name } = req.body;
+      const { category } = req.headers;
+      // Check if the item already exists in this category
+      const itemExists = await ItemModel.findOne({ name, category });
+      if (itemExists) {
+        return res.status(400).json({ message: "Item already exists" });
       }
-  // if name is already exist
-      const isExist = await ItemModel
-        .findOne({ name });
-      if (isExist) {
-        return res.status(500).send({ error: "Item Already Exist" });
-      }
-      const Item = new ItemModel({ ...req.body, slug: slugify(name) });
-        await Item.save();
-      res.status(201).send({
-        success: true,
-        message: "Item Created Successfully",
-        Item,
+      // Create a new item
+      const item = new ItemModel({
+        name,
+        slug: slugify(name),
+        category,
       });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
+      await item.save();
+      res.status(200).json({ message: "Item created successfully" });
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }     
 };
   
   const getItemController = async (req, res) => {
@@ -51,4 +46,3 @@ const slugify = require("slugify");
 
     exports.createItem = createItem;
     exports.getItemController = getItemController;
-   

@@ -12,21 +12,22 @@ const slugify = require("slugify");
         const { name, advice, doctor } = req.body;
         const category = req.headers.category;
         const user = req.headers.user;
-  
       switch (true) {
         case !name:
           return res.status(500).send({ error: "Name is Required" });
 
       }
-    // if name is already exist in category
-        const isExist = await AdminCategory
-          .findOne({ name });
+      // name is exit andthe same category and user
+      const isExist = await AdminCategory
+        .findOne({ name, category, user });
         if (isExist) {
-          return res.status(500).send({ error: "Item Already Exist" });
+          return res.status(400).send({ error: "Item Already Exist" });
         }
+   
+      // category from header
         const Item = new AdminCategory({ ...req.body, slug: slugify(name), category, user });
           await Item.save();
-        res.status(201).send({
+        res.status(200).send({
           success: true,
           message: "Item Created Successfully",
           Item,
@@ -44,12 +45,13 @@ const slugify = require("slugify");
             .find({ category, user })
             .populate("category", "user")
             res.status(200).send(items);
-
-                 }
+            console.log(items);
+        }                 
         catch (error) {
             console.log(error);
             res.status(500).json({ message: "Internal Server Error" });
         }
+       
     }
     // update item by admin
     const updateItem = async (req, res) => {
