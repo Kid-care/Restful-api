@@ -217,6 +217,45 @@ const deleteAdmin = asyncHandler(async (req, res) => {
 })
 
 
+// get all admin users
+
+
+const getAllAdmins = asyncHandler(async (req, res) => {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(401).send({
+            status: false,
+            message: "توكن مفقود",
+        });
+
+    }
+
+    const owner = await getOwnerFromToken(token);
+
+    if (!owner) {
+        return res.status(404).send({
+            status: false,
+            message: "ال owner غير موجود",
+        });
+    }
+
+    if (owner.roles !== "owner") {
+        return res.status(403).send({
+            status: false,
+            message: "غير مسموح لك بالوصول",
+        });
+    }
+
+    const admins = await Admin.find();
+
+    res.status(200).json({
+        status: true,
+        message: "كل الادمنز",
+        admins
+    });
+
+});
 
 
 const UserCount = async (req, res) => {
@@ -390,4 +429,4 @@ const loginOwner = asyncHandler(async (req, res) => {
 }
 );
 
-module.exports = { addAdmin, updateAdmin, deleteAdmin, UserCount, AdminCount, filterUser, registerOwner, loginOwner };
+module.exports = { addAdmin, updateAdmin, deleteAdmin, UserCount, AdminCount, filterUser, registerOwner, loginOwner , getAllAdmins };
