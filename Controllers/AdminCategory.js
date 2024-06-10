@@ -84,7 +84,32 @@ const slugify = require("slugify");
             res.status(500).json({ message: "Internal Server Error" });
         }
     }
+  
+   // count documents in category
+    const count_documents = async (req, res) => {
+        try {
+  
+            const count = await AdminCategory.aggregate([
+                {
+                    $group: {
+                        _id: "$name",
+                        count: { $sum: 1 },
+                    },
+                },
+            ]);
+            res.status(200).send(count);
 
- 
-module.exports = {createByAdmin, getItemsByCategory , updateItem , deleteItem};
+          
+        }
+        catch (error) {
+            console.log(error);
+            res.status(500).json({ message: "Internal Server Error" });
+        }
+    }
+    
+
+     
+
+
+module.exports = {createByAdmin, getItemsByCategory , updateItem , deleteItem , count_documents};
 
