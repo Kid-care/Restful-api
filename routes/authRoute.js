@@ -1,14 +1,14 @@
 const express = require('express')
 const router = express.Router();
 const asyncHandler = require("express-async-handler")
-const {registerController,loginController} = require('../Controllers/authController');
+const {registerController,loginController , loginAll} = require('../Controllers/authController');
 const { body } = require('express-validator');
 
-
-//register router
 router.post('/register' , registerController);
-// login router 
-router.post('/login',loginController)
+
+router.post('/login',loginController);
+
+router.post('/loginAll',loginAll);
 
 
 module.exports = router ;

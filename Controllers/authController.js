@@ -11,8 +11,10 @@ const {verifyToken} = require("../middleware/verifyToken");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
 const { User
-  , validateRegisterUser
+  , validateRegisterUser , validateLoginUser
 } = require('../models/userModel');
+const {Admin , validateRegisterAdmin , validateLoginAdmin} = require('../models/adminModel');
+const { Owner, validateRegisterOwner, validateLoginOwner } = require('../models/ownerModel');
 const asyncHandler = require("express-async-handler");
 const isAdmin = require("../middleware/isAdmin");
 const { userInfo } = require("os");
@@ -137,4 +139,56 @@ const loginController = async (req, res) => {
 };
 
 
-module.exports = { loginController, registerController };
+const loginAll = asyncHandler(async (req, res) => {
+  const { error1 } = validateLoginAdmin(req.body);
+  const { error2 } = validateLoginOwner(req.body);
+  const { error3 } = validateLoginUser(req.body);
+
+  if (error1 && error2 && error3) {
+    const errorMessage = error1?.details[0]?.message || error2?.details[0]?.message || error3?.details[0]?.message;
+    return res.status(400).json({
+      status: false,
+      message: errorMessage
+    });
+  }
+
+  const [admin, owner, user] = await Promise.all([
+    Admin.findOne({ email: req.body.email }),
+    Owner.findOne({ email: req.body.email }),
+    User.findOne({ email: req.body.email })
+  ]);
+
+  if (!admin && !owner && !user) {
+    return res.status(400).json({
+      status: false,
+      message: "الايميل خاطئ"
+    });
+  }
+
+  const loginUser = async (user) => {
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) {
+      return res.status(400).json({
+        status: false,
+        message: "كلمة المرور خاطئة"
+      });
+    }
+    const token = JWT.sign({ _id: user._id, roles: user.roles }, process.env.JWT_SECRET);
+    return res.status(200).json({
+      status: true,
+      message: "تم تسجيل الدخول بنجاح",
+      user: {
+        _id: user._id,
+        email: user.email,
+        roles: user.roles
+      },
+      token
+    });
+  };
+
+  if (admin) return loginUser(admin);
+  if (owner) return loginUser(owner);
+  if (user) return loginUser(user);
+});
+
+module.exports = { loginController, registerController , loginAll};
