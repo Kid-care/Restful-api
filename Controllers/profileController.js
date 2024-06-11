@@ -11,9 +11,10 @@ const { verifyToken } = require("../middleware/verifyToken");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
 const { User, validateRegisterUser } = require('../models/userModel');
+const {Admin , validateRegisterAdmin , validateLoginAdmin} = require('../models/adminModel');
 const asyncHandler = require("express-async-handler");
 
-const {getUserFromToken} = require("../helpers/getuserfromToken");
+const {getUserFromToken , getAdminFromToken} = require("../helpers/getuserfromToken");
 
 
 
@@ -119,9 +120,46 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
+const adminGetUserData = async (req, res) => {
+    try {
+        const token = req.headers['authorization'];
+        if (!token) {
+            return res.status(401).send({
+                status: false,
+                message: "توكن مفقود",
+            });
+        }
 
+        const admin = await getAdminFromToken(token);
 
-module.exports = { getUserProfile , updateUserProfile };
+        if (!admin) {
+            return res.status(404).send({
+                status: false,
+                message: "غير مسموح لك بالوصول",
+            });
+        }
+
+        const id = req.headers['id'];
+
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).send({
+                status: false,
+                message: "المستخدم غير موجود",
+            });
+        }
+
+        res.status(200).send({
+            status: true,
+            message: "تم العثور على المستخدم",
+            user
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+module.exports = { getUserProfile , updateUserProfile , adminGetUserData};
 
 
 
