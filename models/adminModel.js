@@ -39,6 +39,7 @@ const adminSchema = new mongoose.Schema(
 function validateRegisterAdmin(user) {
   const schema = Joi.object({
     email: Joi.string().email().required(),
+    password: Joi.string().min(6).required(),
     name: Joi.string().min(3).max(255).required(),
     phoneNumber: Joi.string().min(11).max(11).required(),
     city: Joi.string().min(3).max(255).required(),
@@ -47,6 +48,20 @@ function validateRegisterAdmin(user) {
   });
   return schema.validate(user);
 }
+
+
+function validateupdateAdmin(user) {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    name: Joi.string().min(3).max(255).required(),
+    phoneNumber: Joi.string().min(11).max(11).required(),
+    city: Joi.string().min(3).max(255).required(),
+    specialization: Joi.string().min(2).max(255).required(),
+    roles: Joi.string().optional().default('admin')
+  });
+  return schema.validate(user);
+}
+
 
 
 function validateLoginAdmin(user) {
@@ -59,4 +74,4 @@ function validateLoginAdmin(user) {
 
 const Admin = mongoose.model("Admin", adminSchema);
 
-module.exports = { Admin, validateRegisterAdmin , validateLoginAdmin};
+module.exports = { Admin, validateRegisterAdmin , validateLoginAdmin , validateupdateAdmin};

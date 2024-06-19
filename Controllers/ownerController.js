@@ -11,7 +11,7 @@ const joi = require("joi");
 const { comparePassword, hashPassword } = require("../helpers/authHelper");
 const bcrypt = require("bcrypt");
 const { User, validateRegisterUser } = require('../models/userModel');
-const { Admin, validateRegisterAdmin } = require('../models/adminModel');
+const { Admin, validateRegisterAdmin , validateupdateAdmin} = require('../models/adminModel');
 const { Owner, validateRegisterOwner, validateLoginOwner } = require('../models/ownerModel');
 const asyncHandler = require("express-async-handler");
 const { getUserFromToken, getOwnerFromToken } = require("../helpers/getuserfromToken");
@@ -123,7 +123,7 @@ const updateAdmin = asyncHandler(async (req, res) => {
         });
     }
 
-    const { error } = validateRegisterAdmin(req.body);
+    const { error } = validateupdateAdmin(req.body);
 
     if (error) {
         return res.status(400).json({
