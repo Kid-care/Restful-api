@@ -141,14 +141,10 @@ const updateAdmin = asyncHandler(async (req, res) => {
         })
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
 
     admin.email = req.body.email;
     admin.name = req.body.name;
     admin.phoneNumber = req.body.phoneNumber;
-    admin.password = hashedPassword;
     admin.city = req.body.city;
     admin.specialization = req.body.specialization;
 
