@@ -309,9 +309,7 @@ const filterUser = async (req, res) => {
         '61-infinity': 0
     };
 
-    const user = mongoose.model('users', new mongoose.Schema({ birthDate: String }));
-
-    const users = await user.find();
+    const users = await User.find();
 
     users.forEach(user => {
         let birthDate = moment(user.birthDate, "MM/DD/YYYY");
@@ -332,11 +330,8 @@ const filterUser = async (req, res) => {
         status: true,
         message: "عدد المستخدمين",
         ageGroups
-
     });
-
 }
-
 
 
 const registerOwner = asyncHandler(async (req, res) => {
